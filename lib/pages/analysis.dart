@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+
 class Analysis extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: myColorPrimary,
         centerTitle: true,
         title: Text("Анализ"),
         actions: <Widget>[

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_list/provider/eventProvider.dart';
 
 import 'models/navigationBar.dart';
 
@@ -10,16 +12,27 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'My Todo',
-      theme: ThemeData(
-          primaryTextTheme:
-              TextTheme(bodyText1: TextStyle(color: Colors.white)),
-          scaffoldBackgroundColor: myColor,
-          primaryColor: myColorPrimary,
-          // ignore: deprecated_member_use
-          textTheme: TextTheme(title: TextStyle(color: Colors.white70))),
-      home: HomePage(),
+    return ChangeNotifierProvider(
+      create: (context) => EventProvider(),
+      child: MaterialApp(
+        title: 'My Todo',
+        theme: ThemeData.dark(),
+
+        // accentTextTheme: TextTheme(
+        //     bodyText1: TextStyle(color: Colors.white),
+        //     bodyText2: TextStyle(color: Colors.white)),
+        // primaryTextTheme: TextTheme(
+        //     bodyText1: TextStyle(color: Colors.white),
+        //     bodyText2: TextStyle(color: Colors.white)),
+        // scaffoldBackgroundColor: myColor,
+        // primaryColor: myColorPrimary,
+        // accentColor: Colors.white,
+        // hintColor: Colors.white,
+        // // ignore: deprecated_member_use
+        // textTheme: TextTheme(title: TextStyle(color: Colors.white70), )
+
+        home: HomePage(),
+      ),
     );
   }
 }

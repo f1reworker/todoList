@@ -1,14 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:todo_list/main.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:todo_list/provider/eventProvider.dart';
+import 'package:todo_list/widget/tasksWidget.dart';
+
+import '../eventDataSource.dart';
+import 'eventEditingPage.dart';
 
 class CalendarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: myColorPrimary,
         centerTitle: true,
         title: Text("Календарь"),
         actions: <Widget>[
@@ -36,39 +43,40 @@ class _CalendarState extends State<Calendar> {
       body: SfCalendarTheme(
         data: SfCalendarThemeData(
           brightness: Brightness.dark,
-          backgroundColor: myColor,
         ),
         child: SafeArea(
-          child: SfCalendar(
-            view: CalendarView.month,
-            firstDayOfWeek: 1,
-            dataSource: MeetingDataSource(getAppointments()),
-            onSelectionChanged: (CalendarSelectionDetails details) {},
-          ),
+          child: CalendarWidget(),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add, color: Colors.white),
+        backgroundColor: Colors.red,
+        onPressed: () => Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => EventEditingPage())),
       ),
     );
   }
 }
 
-List<Appointment> getAppointments() {
-  List<Appointment> meetings = <Appointment>[];
-  final DateTime today = DateTime.now();
-  final DateTime startTime =
-      DateTime(today.year, today.month, today.day, 9, 0, 0);
-  final DateTime endTime = startTime.add(const Duration(hours: 2));
+class CalendarWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final events = Provider.of<EventProvider>(context).events;
 
-  meetings.add(Appointment(
-      startTime: startTime,
-      endTime: endTime,
-      subject: "Conference",
-      color: Colors.red,
-      recurrenceRule: "FREQ=DAILY;COUNT=10"));
-  return meetings;
-}
+    return SfCalendar(
+      view: CalendarView.month,
+      dataSource: EventDataSource(events),
+      firstDayOfWeek: 1,
+      initialSelectedDate: DateTime.now(),
+      onLongPress: (CalendarLongPressDetails details) {
+        final provider = Provider.of<EventProvider>(context, listen: false);
+        provider.setDate(details.date!);
 
-class MeetingDataSource extends CalendarDataSource {
-  MeetingDataSource(List<Appointment> source) {
-    appointments = source;
+        showModalBottomSheet(
+          context: context,
+          builder: (context) => TasksWidget(),
+        );
+      },
+    );
   }
 }
