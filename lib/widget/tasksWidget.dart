@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:todo_list/eventDataSource.dart';
+import 'package:todo_list/pages/calendar.dart';
 import 'package:todo_list/pages/eventViewingPage.dart';
 import 'package:todo_list/provider/eventProvider.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -33,6 +34,7 @@ class _TasksWidgetState extends State<TasksWidget> {
       child: SfCalendar(
         view: CalendarView.timelineDay,
         dataSource: EventDataSource(provider.events),
+        initialDisplayDate: provider.selectedDate,
         initialSelectedDate: provider.selectedDate,
         appointmentBuilder: appointmentBuilder,
         // onTap: (details) {

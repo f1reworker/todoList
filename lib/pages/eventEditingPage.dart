@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_list/main.dart';
@@ -209,7 +211,7 @@ class _EventEditingPageState extends State<EventEditingPage> {
   Future saveForm() async {
     final isValid = _formKey.currentState!.validate();
 
-    if (isValid) {
+    if (isValid && fromDate.isBefore(toDate)) {
       final event = Event(
           title: titleController.text,
           description: 'Description',

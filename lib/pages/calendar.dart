@@ -70,6 +70,7 @@ class CalendarWidget extends StatelessWidget {
       initialSelectedDate: DateTime.now(),
       onLongPress: (CalendarLongPressDetails details) {
         final provider = Provider.of<EventProvider>(context, listen: false);
+
         provider.setDate(details.date!);
 
         showModalBottomSheet(
