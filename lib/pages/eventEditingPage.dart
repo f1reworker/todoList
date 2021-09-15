@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_list/main.dart';
+import 'package:todo_list/pages/calendar.dart';
 import 'package:todo_list/provider/eventProvider.dart';
 
 import '../event.dart';
@@ -30,8 +31,8 @@ class _EventEditingPageState extends State<EventEditingPage> {
   void initState() {
     super.initState();
     if (widget.event == null) {
-      fromDate = DateTime.now();
-      toDate = DateTime.now().add(Duration(hours: 2));
+      fromDate = selectedDate;
+      toDate = selectedDate.add(Duration(hours: 2));
     }
   }
 

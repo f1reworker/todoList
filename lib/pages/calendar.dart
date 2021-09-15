@@ -10,6 +10,8 @@ import 'package:todo_list/widget/tasksWidget.dart';
 import '../eventDataSource.dart';
 import 'eventEditingPage.dart';
 
+DateTime selectedDate = DateTime.now();
+
 class CalendarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -68,6 +70,9 @@ class CalendarWidget extends StatelessWidget {
       dataSource: EventDataSource(events),
       firstDayOfWeek: 1,
       initialSelectedDate: DateTime.now(),
+      onTap: (CalendarTapDetails details) {
+        selectedDate = details.date!;
+      },
       onLongPress: (CalendarLongPressDetails details) {
         final provider = Provider.of<EventProvider>(context, listen: false);
 
