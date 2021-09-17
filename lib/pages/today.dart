@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/pages/eventEditingPage.dart';
 import 'package:todo_list/provider/eventProvider.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
@@ -37,6 +38,7 @@ Widget eventToday(
   BuildContext context,
 ) {
   final provider = Provider.of<EventProvider>(context);
+  int eventsLength = provider.eventsToday.length;
   if (provider.eventsToday.length == 0) {
     return Center(
       child: Text('No Events TOday!'),
@@ -46,13 +48,57 @@ Widget eventToday(
     child: new ListView.separated(
       separatorBuilder: (context, index) => Divider(),
       // color: Colors.black,),
-      itemCount: provider.eventsToday.length,
+      itemCount: eventsLength,
       itemBuilder: (context, index) {
-        return new Container(
-          height: 122,
-          child: Text(provider.eventsToday[index].title),
+        return Row(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width - 50,
+              child: new TextButton(
+                child: Container(
+                  height: 80,
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(left: 15, top: 15),
+                        child: Text(
+                          provider.eventsToday[index].title,
+                          style: new TextStyle(
+                              fontSize: 20,
+                              color: provider.events[index].backgroundColor),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 15, top: 15),
+                        child: Text(
+                          provider.eventsToday[index].description,
+                          style: new TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => EventEditingPage())),
+              ),
+            ),
+            Container(
+                width: 50,
+                child: TextButton(
+                    child: Icon(
+                      Icons.check_box_outlined,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      provider.deleteEvent(index);
+                      provider.eventsTodayFunc();
+                    }))
+          ],
         );
       },
     ),
   );
 }
+
+
+//TODO: добавление списоков/задач на сегодня 

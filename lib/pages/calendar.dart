@@ -50,12 +50,6 @@ class _CalendarState extends State<Calendar> {
           child: CalendarWidget(),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add, color: Colors.white),
-        backgroundColor: Colors.red,
-        onPressed: () => Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => EventEditingPage())),
-      ),
     );
   }
 }
@@ -71,9 +65,6 @@ class CalendarWidget extends StatelessWidget {
       firstDayOfWeek: 1,
       initialSelectedDate: DateTime.now(),
       onTap: (CalendarTapDetails details) {
-        selectedDate = details.date!;
-      },
-      onLongPress: (CalendarLongPressDetails details) {
         final provider = Provider.of<EventProvider>(context, listen: false);
 
         provider.setDate(details.date!);
@@ -82,6 +73,11 @@ class CalendarWidget extends StatelessWidget {
           context: context,
           builder: (context) => TasksWidget(),
         );
+      },
+      onLongPress: (CalendarLongPressDetails details) {
+        selectedDate = (details.date!);
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => EventEditingPage()));
       },
     );
   }

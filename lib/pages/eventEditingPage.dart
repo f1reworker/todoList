@@ -21,9 +21,12 @@ class EventEditingPage extends StatefulWidget {
   _EventEditingPageState createState() => _EventEditingPageState();
 }
 
+bool checkedColor = false;
+
 class _EventEditingPageState extends State<EventEditingPage> {
   final _formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
   late DateTime fromDate;
   late DateTime toDate;
 
@@ -57,6 +60,8 @@ class _EventEditingPageState extends State<EventEditingPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 buildTitle(),
+                buildDescription(),
+                buildCheckColor(),
                 SizedBox(
                   height: 12,
                 ),
@@ -90,6 +95,195 @@ class _EventEditingPageState extends State<EventEditingPage> {
             title != null && title.isEmpty ? 'Title cannot be Empty' : null,
         controller: titleController,
       );
+
+  Widget buildDescription() => TextFormField(
+        cursorColor: Colors.white,
+        style: TextStyle(fontSize: 24),
+        decoration: InputDecoration(
+          border: UnderlineInputBorder(),
+          hintText: 'Add Description',
+        ),
+        //onFieldSubmitted: (_) => saveForm(),
+        controller: descriptionController,
+      );
+
+  Color backgroundColor = Colors.green;
+  Icon colorRed = Icon(
+    Icons.check,
+    color: Colors.transparent,
+  );
+  Icon colorOrange = Icon(
+    Icons.check,
+    color: Colors.transparent,
+  );
+  Icon colorYellow = Icon(
+    Icons.check,
+    color: Colors.transparent,
+  );
+  Icon colorGreen = Icon(
+    Icons.check,
+    color: Colors.transparent,
+  );
+  Icon colorBlue = Icon(
+    Icons.check,
+    color: Colors.transparent,
+  );
+  Icon colorPurple = Icon(
+    Icons.check,
+    color: Colors.transparent,
+  );
+
+  Widget buildCheckColor() => Row(
+        children: <Widget>[
+          Container(
+            height: 25,
+            width: 25,
+            margin: EdgeInsets.all(8),
+            //padding: EdgeInsets.all(0),
+            child: TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: () {
+                checkColor("red");
+              },
+              child: FittedBox(
+                  fit: BoxFit.cover,
+                  clipBehavior: Clip.hardEdge,
+                  child: colorRed),
+            ),
+          ),
+          Container(
+            height: 25,
+            width: 25,
+            //color: Colors.red,
+            margin: EdgeInsets.all(8),
+            //padding: EdgeInsets.all(0),
+            child: TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.orange),
+              onPressed: () {
+                checkColor("orange");
+              },
+              child: FittedBox(
+                  fit: BoxFit.cover,
+                  clipBehavior: Clip.hardEdge,
+                  child: colorOrange),
+            ),
+          ),
+          Container(
+            height: 25,
+            width: 25,
+            //color: Colors.red,
+            margin: EdgeInsets.all(8),
+            //padding: EdgeInsets.all(0),
+            child: TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.yellow),
+              onPressed: () {
+                checkColor("yellow");
+              },
+              child: FittedBox(
+                  fit: BoxFit.cover,
+                  clipBehavior: Clip.hardEdge,
+                  child: colorYellow),
+            ),
+          ),
+          Container(
+            height: 25,
+            width: 25,
+            //color: Colors.red,
+            margin: EdgeInsets.all(8),
+            //padding: EdgeInsets.all(0),
+            child: TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.green),
+              onPressed: () {
+                checkColor("green");
+              },
+              child: FittedBox(
+                  fit: BoxFit.cover,
+                  clipBehavior: Clip.hardEdge,
+                  child: colorGreen),
+            ),
+          ),
+          Container(
+            height: 25,
+            width: 25,
+            //color: Colors.red,
+            margin: EdgeInsets.all(8),
+            //padding: EdgeInsets.all(0),
+            child: TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.blue),
+              onPressed: () {
+                checkColor("blue");
+              },
+              child: FittedBox(
+                  fit: BoxFit.cover,
+                  clipBehavior: Clip.hardEdge,
+                  child: colorBlue),
+            ),
+          ),
+          Container(
+            height: 25,
+            width: 25,
+            //color: Colors.red,
+            margin: EdgeInsets.all(8),
+            //padding: EdgeInsets.all(0),
+            child: TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.purple),
+              onPressed: () {
+                checkColor("purple");
+              },
+              child: FittedBox(
+                  fit: BoxFit.cover,
+                  clipBehavior: Clip.hardEdge,
+                  child: colorPurple),
+            ),
+          ),
+        ],
+      );
+  void checkColor(String colors) {
+    colorRed = Icon(
+      Icons.check,
+      color: Colors.transparent,
+    );
+    colorOrange = Icon(
+      Icons.check,
+      color: Colors.transparent,
+    );
+    colorYellow = Icon(
+      Icons.check,
+      color: Colors.transparent,
+    );
+    colorGreen = Icon(
+      Icons.check,
+      color: Colors.transparent,
+    );
+    colorBlue = Icon(
+      Icons.check,
+      color: Colors.transparent,
+    );
+    colorPurple = Icon(
+      Icons.check,
+      color: Colors.transparent,
+    );
+    if (colors == "red") {
+      backgroundColor = Colors.red;
+      colorRed = new Icon(Icons.check, color: Colors.white);
+    } else if (colors == "orange") {
+      backgroundColor = Colors.orange;
+      colorOrange = new Icon(Icons.check, color: Colors.white);
+    } else if (colors == "yellow") {
+      backgroundColor = Colors.yellow;
+      colorYellow = new Icon(Icons.check, color: Colors.white);
+    } else if (colors == "green") {
+      backgroundColor = Colors.green;
+      colorGreen = new Icon(Icons.check, color: Colors.white);
+    } else if (colors == "blue") {
+      backgroundColor = Colors.blue;
+      colorBlue = new Icon(Icons.check, color: Colors.white);
+    } else if (colors == "purple") {
+      backgroundColor = Colors.purple;
+      colorPurple = new Icon(Icons.check, color: Colors.white);
+    }
+    setState(() {});
+  }
 
   Widget buildDateTimePickers() => Column(
         children: [
@@ -215,10 +409,11 @@ class _EventEditingPageState extends State<EventEditingPage> {
     if (isValid && fromDate.isBefore(toDate)) {
       final event = Event(
           title: titleController.text,
-          description: 'Description',
+          description: descriptionController.text,
           from: fromDate,
           to: toDate,
-          isAllDay: false);
+          isAllDay: false,
+          backgroundColor: backgroundColor);
 
       final provider = Provider.of<EventProvider>(context, listen: false);
       provider.addEvent(event);

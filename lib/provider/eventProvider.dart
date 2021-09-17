@@ -25,7 +25,6 @@ class EventProvider extends ChangeNotifier {
     for (int i = 0; i < _eventsLength; i++) {
       if (dateOnly(DateTime.now()) == dateOnly(events[i].from)) {
         _eventsToday.add(events[i]);
-        print(events[i].title);
       }
     }
     notifyListeners();
@@ -33,6 +32,11 @@ class EventProvider extends ChangeNotifier {
 
   void addEvent(Event event) {
     _events.add(event);
+    notifyListeners();
+  }
+
+  void deleteEvent(int index) {
+    _events.removeAt(index);
     notifyListeners();
   }
 }
