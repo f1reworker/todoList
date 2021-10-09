@@ -18,9 +18,11 @@ class Notes extends StatelessWidget {
           )
         ],
       ),
-      body: Container(
-        child: Text("Заметки"),
-      ),
+      body: Container(),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add, color: Colors.white),
+          backgroundColor: Colors.red,
+          onPressed: () {}),
     );
   }
 }

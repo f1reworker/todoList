@@ -23,9 +23,9 @@ class EventProvider extends ChangeNotifier {
     int _eventsLength = 0;
     _eventsLength = events.length;
     for (int i = 0; i < _eventsLength; i++) {
-      if (dateOnly(DateTime.now()) == dateOnly(events[i].from)) {
-        _eventsToday.add(events[i]);
-      }
+      // if (dateOnly(DateTime.now()) == dateOnly(events[i].from)) {
+      //   _eventsToday.add(events[i]);
+      // }
     }
     notifyListeners();
   }

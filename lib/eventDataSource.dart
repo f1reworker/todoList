@@ -9,10 +9,10 @@ class EventDataSource extends CalendarDataSource {
   Event getEvent(int index) => appointments![index] as Event;
 
   @override
-  DateTime getStartTime(int index) => getEvent(index).from;
+  int getDuration(int index) => getEvent(index).duration;
 
   @override
-  DateTime getEndTime(int index) => getEvent(index).to;
+  DateTime getDeadline(int index) => getEvent(index).deadline;
 
   @override
   String getSubject(int index) => getEvent(index).title;
@@ -21,8 +21,6 @@ class EventDataSource extends CalendarDataSource {
   Color getColor(int index) => getEvent(index).backgroundColor;
 
   @override
-  bool isAllDay(int index) => getEvent(index).isAllDay;
-
-  @override
+  // ignore: override_on_non_overriding_member
   String getDescription(int index) => getEvent(index).description;
 }

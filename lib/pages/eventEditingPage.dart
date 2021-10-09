@@ -27,15 +27,13 @@ class _EventEditingPageState extends State<EventEditingPage> {
   final _formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
-  late DateTime fromDate;
-  late DateTime toDate;
+  late DateTime deadline;
 
   @override
   void initState() {
     super.initState();
     if (widget.event == null) {
-      fromDate = selectedDate;
-      toDate = selectedDate.add(Duration(hours: 2));
+      deadline = selectedDate;
     }
   }
 
@@ -65,11 +63,30 @@ class _EventEditingPageState extends State<EventEditingPage> {
                 SizedBox(
                   height: 12,
                 ),
+                buildRangeSlider(),
                 buildDateTimePickers(),
               ],
             ),
           ),
         ),
+      );
+  int importance = 20;
+  Widget buildRangeSlider() => Slider(
+        value: importance.toDouble(),
+        min: 1,
+        max: 100,
+        divisions: 100,
+        activeColor: Colors.green,
+        inactiveColor: Colors.grey,
+        label: '${importance.round()}',
+        onChanged: (double newValue) {
+          setState(() {
+            importance = newValue.round();
+          });
+        },
+        // semanticFormatterCallback: (double newValue) {
+        //   return '${newValue.round()}';
+        // }
       );
 
   List<Widget> buildEditingActions() => [
@@ -90,7 +107,6 @@ class _EventEditingPageState extends State<EventEditingPage> {
           border: UnderlineInputBorder(),
           hintText: 'Add Title',
         ),
-        //onFieldSubmitted: (_) => saveForm(),
         validator: (title) =>
             title != null && title.isEmpty ? 'Title cannot be Empty' : null,
         controller: titleController,
@@ -103,7 +119,6 @@ class _EventEditingPageState extends State<EventEditingPage> {
           border: UnderlineInputBorder(),
           hintText: 'Add Description',
         ),
-        //onFieldSubmitted: (_) => saveForm(),
         controller: descriptionController,
       );
 
@@ -287,70 +302,85 @@ class _EventEditingPageState extends State<EventEditingPage> {
 
   Widget buildDateTimePickers() => Column(
         children: [
-          buildFrom(),
+          buildDuration(),
           buildTo(),
         ],
       );
-
-  Widget buildFrom() => buildHeader(
-        header: 'From',
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: buildDropdownField(
-                text: Utils.toDate(fromDate),
-                onClicked: () => pickFromDateTime(pickDate: true),
+  int _selectedMin = 10;
+  int _selectedHours = 0;
+  Widget buildDuration() => buildHeader(
+      header: 'Duration',
+      child: Row(
+        children: [
+          Text("Hours:", style: TextStyle(fontSize: 16)),
+          SizedBox(
+            width: 10,
+          ),
+          DropdownButton<int>(
+              hint: Text(
+                _selectedHours.toString(),
+                style: TextStyle(fontSize: 20),
               ),
-            ),
-            Expanded(
-              child: buildDropdownField(
-                text: Utils.toTime(fromDate),
-                onClicked: () => pickFromDateTime(pickDate: false),
-              ),
-            ),
-          ],
-        ),
-      );
+              items: <int>[0, 1, 2, 3, 4, 5, 6, 7, 8].map((int value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text(value.toString()),
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                setState(() {
+                  _selectedHours = newValue!;
+                });
+              }),
+          SizedBox(
+            width: 10,
+          ),
+          Text("Minute:", style: TextStyle(fontSize: 16)),
+          SizedBox(
+            width: 10,
+          ),
+          DropdownButton<int>(
+              hint:
+                  Text(_selectedMin.toString(), style: TextStyle(fontSize: 20)),
+              items: <int>[0, 5, 10, 15, 20, 30, 40, 50, 60].map((int value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text(value.toString()),
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                setState(() {
+                  _selectedMin = newValue!;
+                });
+              })
+        ],
+      ));
   Widget buildTo() => buildHeader(
-        header: 'To',
+        header: 'Deadline',
         child: Row(
           children: [
             Expanded(
               flex: 2,
               child: buildDropdownField(
-                text: Utils.toDate(toDate),
-                onClicked: () => pickToDateTime(pickDate: true),
+                text: Utils.toDate(deadline),
+                onClicked: () => pickDeadline(pickDate: true),
               ),
             ),
             Expanded(
               child: buildDropdownField(
-                text: Utils.toTime(toDate),
-                onClicked: () => pickToDateTime(pickDate: false),
+                text: Utils.toTime(deadline),
+                onClicked: () => pickDeadline(pickDate: false),
               ),
             ),
           ],
         ),
       );
 
-  Future pickFromDateTime({required bool pickDate}) async {
-    final date = await pickDateTime(fromDate, pickDate: pickDate);
+  Future pickDeadline({required bool pickDate}) async {
+    final date = await pickDateTime(deadline, pickDate: pickDate);
     if (date == null) return;
 
-    if (date.isAfter(toDate)) {
-      toDate =
-          DateTime(date.year, date.month, date.day, date.hour + 1, date.minute);
-    }
-
-    setState(() => fromDate = date);
-  }
-
-  Future pickToDateTime({required bool pickDate}) async {
-    final date = await pickDateTime(toDate,
-        pickDate: pickDate, firstDate: pickDate ? fromDate : null);
-    if (date == null) return;
-
-    setState(() => toDate = date);
+    setState(() => deadline = date);
   }
 
   Future<DateTime?> pickDateTime(
@@ -405,19 +435,23 @@ class _EventEditingPageState extends State<EventEditingPage> {
 
   Future saveForm() async {
     final isValid = _formKey.currentState!.validate();
-
-    if (isValid && fromDate.isBefore(toDate)) {
+    final duration = _selectedHours * 60 + _selectedMin;
+    if (isValid) {
       final event = Event(
           title: titleController.text,
           description: descriptionController.text,
-          from: fromDate,
-          to: toDate,
-          isAllDay: false,
+          importance: importance,
+          duration: duration,
+          deadline: deadline,
           backgroundColor: backgroundColor);
 
       final provider = Provider.of<EventProvider>(context, listen: false);
       provider.addEvent(event);
       Navigator.of(context).pop();
     }
+    print(titleController.text);
+    print(importance);
+    print(duration);
+    print(deadline);
   }
 }

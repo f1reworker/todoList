@@ -56,7 +56,7 @@ Widget eventToday(
               width: MediaQuery.of(context).size.width - 50,
               child: new TextButton(
                 child: Container(
-                  height: 80,
+                  height: 82,
                   child: Column(
                     children: <Widget>[
                       Container(
