@@ -7,12 +7,18 @@ class EventDataSource extends CalendarDataSource {
     this.appointments = appointments;
   }
   Event getEvent(int index) => appointments![index] as Event;
-
+  //! Отредачена библиотка
   @override
   int getDuration(int index) => getEvent(index).duration;
 
   @override
   DateTime getDeadline(int index) => getEvent(index).deadline;
+  //!
+  @override
+  DateTime getStartTime(int index) => getEvent(index).deadline;
+
+  @override
+  DateTime getEndTime(int index) => getEvent(index).deadline;
 
   @override
   String getSubject(int index) => getEvent(index).title;

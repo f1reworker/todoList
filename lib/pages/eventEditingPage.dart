@@ -438,12 +438,13 @@ class _EventEditingPageState extends State<EventEditingPage> {
     final duration = _selectedHours * 60 + _selectedMin;
     if (isValid) {
       final event = Event(
-          title: titleController.text,
-          description: descriptionController.text,
-          importance: importance,
-          duration: duration,
-          deadline: deadline,
-          backgroundColor: backgroundColor);
+        title: titleController.text,
+        description: descriptionController.text,
+        importance: importance,
+        duration: duration,
+        deadline: deadline,
+        backgroundColor: backgroundColor,
+      );
 
       final provider = Provider.of<EventProvider>(context, listen: false);
       provider.addEvent(event);

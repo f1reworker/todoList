@@ -1,19 +1,27 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_list/pages/landing.dart';
+import 'package:todo_list/provider/authProvider.dart';
 import 'package:todo_list/provider/eventProvider.dart';
-
-import 'models/navigationBar.dart';
 
 const myColor = Color.fromRGBO(20, 20, 20, 100);
 const myColorPrimary = Color.fromRGBO(12, 10, 13, 1);
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => EventProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<EventProvider>(create: (_) => EventProvider()),
+        ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+      ],
       child: MaterialApp(
         title: 'My Todo',
         theme: ThemeData.dark(),
@@ -31,22 +39,13 @@ class MyApp extends StatelessWidget {
         // // ignore: deprecated_member_use
         // textTheme: TextTheme(title: TextStyle(color: Colors.white70), )
 
-        home: HomePage(),
+        home: LandingPage(),
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        child: Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: NavigationBar(),
-    ));
-  }
-}
 
 
 //TODO: воткнуть выполнение до определенного числа, время выполнения, важность, формирование сегодняшнего исходя из этих данных
