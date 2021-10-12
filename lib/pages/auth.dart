@@ -46,6 +46,7 @@ class AuthorizationPage extends StatelessWidget {
                   child: TextButton(
                       onPressed: () {
                         regAndLog();
+                        provider.isLogIn(isLoggedIn);
                       },
                       child: Text("Register and log in")),
                 ),
@@ -90,6 +91,14 @@ class AuthorizationPage extends StatelessWidget {
   void regAndLog() async {
     await _firebaseAuth.createUserWithEmailAndPassword(
         email: _loginController.text, password: _passwordController.text);
-    loginIn();
+    _firebaseAuth
+        .signInWithEmailAndPassword(
+            email: _loginController.text, password: _passwordController.text)
+        .then((value) {
+      print('Login Successful');
+      isLoggedIn = true;
+    });
   }
 }
+
+//TODO: сообщение пароль больше 6 символов
