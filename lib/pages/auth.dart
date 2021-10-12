@@ -45,8 +45,10 @@ class AuthorizationPage extends StatelessWidget {
                   margin: EdgeInsets.all(0),
                   child: TextButton(
                       onPressed: () {
-                        regAndLog();
-                        provider.isLogIn(isLoggedIn);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterPage()));
                       },
                       child: Text("Register and log in")),
                 ),
@@ -87,6 +89,49 @@ class AuthorizationPage extends StatelessWidget {
       isLoggedIn = true;
     });
   }
+}
+
+class RegisterPage extends StatelessWidget {
+  final _loginController = TextEditingController();
+  final _passwordController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<AuthProvider>(context, listen: false);
+    return Center(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        body: Center(
+          child: Container(
+            height: 318,
+            child: Column(
+              children: <Widget>[
+                buildLogPass("Login"),
+                buildLogPass("Password"),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  height: 70,
+                  color: Colors.lightGreen[400],
+                  child: TextButton(
+                    child: Text(
+                      "Register and log in",
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                    ),
+                    onPressed: () {
+                      regAndLog();
+                      isLoggedIn = true;
+                      Navigator.of(context).pop();
+                      provider.isLogIn(isLoggedIn);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   void regAndLog() async {
     await _firebaseAuth.createUserWithEmailAndPassword(
@@ -96,9 +141,28 @@ class AuthorizationPage extends StatelessWidget {
             email: _loginController.text, password: _passwordController.text)
         .then((value) {
       print('Login Successful');
-      isLoggedIn = true;
     });
   }
+
+  Widget buildLogPass(String logPass) => Container(
+      margin: EdgeInsets.all(10),
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white54),
+      ),
+      height: 70,
+      child: (TextFormField(
+        cursorColor: Colors.white,
+        style: TextStyle(fontSize: 24),
+        decoration: InputDecoration(
+          border: UnderlineInputBorder(),
+          hintText: logPass,
+        ),
+        validator: (title) =>
+            title != null && title.isEmpty ? '$logPass is not empty' : null,
+        controller:
+            (logPass == "Login" ? _loginController : _passwordController),
+      )));
 }
 
 //TODO: сообщение пароль больше 6 символов
