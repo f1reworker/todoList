@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/pages/today.dart';
-import 'package:todo_list/pages/calendar.dart';
-import 'package:todo_list/pages/analysis.dart';
-import 'package:todo_list/pages/notes.dart';
+import 'package:todo_list/pages/firstPages/today.dart';
+import 'package:todo_list/pages/firstPages/calendar.dart';
+import 'package:todo_list/pages/firstPages/analysis.dart';
+import 'package:todo_list/pages/firstPages/notes.dart';
 
 import '../main.dart';
 

@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_list/pages/landing.dart';
+import 'package:todo_list/pages/authPages/landing.dart';
 import 'package:todo_list/provider/authProvider.dart';
 import 'package:todo_list/provider/eventProvider.dart';
 

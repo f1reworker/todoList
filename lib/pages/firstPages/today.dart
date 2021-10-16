@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_list/pages/eventEditingPage.dart';
 import 'package:todo_list/provider/eventProvider.dart';
 import 'package:provider/provider.dart';
-import '../main.dart';
+import '../../main.dart';
 
 class Today extends StatefulWidget {
   @override
@@ -13,7 +13,6 @@ class _TodayState extends State<Today> {
   @override
   void initState() {
     super.initState();
-    EventProvider().eventsTodayFunc();
   }
 
   Widget build(BuildContext context) {
@@ -38,17 +37,16 @@ Widget eventToday(
   BuildContext context,
 ) {
   final provider = Provider.of<EventProvider>(context);
-  int eventsLength = provider.eventsToday.length;
-  if (provider.eventsToday.length == 0) {
-    return Center(
-      child: Text('No Events TOday!'),
-    );
-  }
+  // if (provider.eventsToday.length == 0) {
+  //   return Center(
+  //     child: Text('No Events TOday!'),
+  //   );
+  // }
   return Container(
     child: new ListView.separated(
       separatorBuilder: (context, index) => Divider(),
       // color: Colors.black,),
-      itemCount: eventsLength,
+      itemCount: provider.events != [] ? provider.events.length : 0,
       itemBuilder: (context, index) {
         return Row(
           children: [
@@ -62,7 +60,7 @@ Widget eventToday(
                       Container(
                         margin: EdgeInsets.only(left: 15, top: 15),
                         child: Text(
-                          provider.eventsToday[index].title,
+                          provider.events[index].title,
                           style: new TextStyle(
                               fontSize: 20,
                               color: provider.events[index].backgroundColor),
@@ -71,7 +69,7 @@ Widget eventToday(
                       Container(
                         margin: EdgeInsets.only(left: 15, top: 15),
                         child: Text(
-                          provider.eventsToday[index].description,
+                          provider.events[index].description,
                           style: new TextStyle(fontSize: 20),
                         ),
                       ),
@@ -90,8 +88,8 @@ Widget eventToday(
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      provider.deleteEvent(index);
-                      provider.eventsTodayFunc();
+                      //provider.deleteEvent(index);
+                      //provider.eventsTodayFunc();
                     }))
           ],
         );

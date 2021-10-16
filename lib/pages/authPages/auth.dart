@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_list/pages/landing.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:todo_list/pages/authPages/landing.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list/provider/authProvider.dart';
 
-String login = "";
-String password = "";
 final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+String login = "";
 
 class AuthorizationPage extends StatelessWidget {
   final _loginController = TextEditingController();
@@ -22,7 +22,7 @@ class AuthorizationPage extends StatelessWidget {
             height: 318,
             child: Column(
               children: <Widget>[
-                buildLogPass("Login"),
+                buildLogPass("Email"),
                 buildLogPass("Password"),
                 Container(
                   width: MediaQuery.of(context).size.width,
@@ -34,9 +34,17 @@ class AuthorizationPage extends StatelessWidget {
                       "Login",
                       style: TextStyle(fontSize: 24, color: Colors.white),
                     ),
-                    onPressed: () {
-                      loginIn();
-                      provider.isLogIn(isLoggedIn);
+                    onPressed: () async {
+                      await _firebaseAuth
+                          .signInWithEmailAndPassword(
+                              email: _loginController.text.endsWith(" ")
+                                  ? _loginController.text.replaceAll(" ", "")
+                                  : _loginController.text,
+                              password: _passwordController.text)
+                          .then((value) {
+                        provider.getData();
+                        login = _passwordController.text;
+                      });
                     },
                   ),
                 ),
@@ -50,7 +58,7 @@ class AuthorizationPage extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => RegisterPage()));
                       },
-                      child: Text("Register and log in")),
+                      child: Text("Not registered yet? Register!")),
                 ),
               ],
             ),
@@ -77,18 +85,8 @@ class AuthorizationPage extends StatelessWidget {
         validator: (title) =>
             title != null && title.isEmpty ? '$logPass is not empty' : null,
         controller:
-            (logPass == "Login" ? _loginController : _passwordController),
+            (logPass == "Email" ? _loginController : _passwordController),
       )));
-
-  void loginIn() async {
-    await _firebaseAuth
-        .signInWithEmailAndPassword(
-            email: _loginController.text, password: _passwordController.text)
-        .then((value) {
-      print('Login Successful');
-      isLoggedIn = true;
-    });
-  }
 }
 
 class RegisterPage extends StatelessWidget {
@@ -105,7 +103,7 @@ class RegisterPage extends StatelessWidget {
             height: 318,
             child: Column(
               children: <Widget>[
-                buildLogPass("Login"),
+                buildLogPass("Email"),
                 buildLogPass("Password"),
                 Container(
                   width: MediaQuery.of(context).size.width,
@@ -113,17 +111,41 @@ class RegisterPage extends StatelessWidget {
                   height: 70,
                   color: Colors.lightGreen[400],
                   child: TextButton(
-                    child: Text(
-                      "Register and log in",
-                      style: TextStyle(fontSize: 24, color: Colors.white),
-                    ),
-                    onPressed: () {
-                      regAndLog();
-                      isLoggedIn = true;
-                      Navigator.of(context).pop();
-                      provider.isLogIn(isLoggedIn);
-                    },
-                  ),
+                      child: Text(
+                        "Register and log in",
+                        style: TextStyle(fontSize: 24, color: Colors.white),
+                      ),
+                      onPressed: () async {
+                        if (_passwordController.text.length < 6) {
+                          Fluttertoast.showToast(
+                              msg: "Password is less than 6 characters",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        } else {
+                          await _firebaseAuth.createUserWithEmailAndPassword(
+                              email: _loginController.text.endsWith(" ")
+                                  ? _loginController.text.replaceAll(" ", "")
+                                  : _loginController.text,
+                              password: _passwordController.text);
+                          _firebaseAuth
+                              .signInWithEmailAndPassword(
+                                  email: _loginController.text.endsWith(" ")
+                                      ? _loginController.text
+                                          .replaceAll(" ", "")
+                                      : _loginController.text,
+                                  password: _passwordController.text)
+                              .then((value) {
+                            login = _passwordController.text;
+                            isLoggedIn = true;
+                            Navigator.of(context).pop();
+                            provider.isLogIn(isLoggedIn);
+                          });
+                        }
+                      }),
                 ),
               ],
             ),
@@ -131,17 +153,6 @@ class RegisterPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void regAndLog() async {
-    await _firebaseAuth.createUserWithEmailAndPassword(
-        email: _loginController.text, password: _passwordController.text);
-    _firebaseAuth
-        .signInWithEmailAndPassword(
-            email: _loginController.text, password: _passwordController.text)
-        .then((value) {
-      print('Login Successful');
-    });
   }
 
   Widget buildLogPass(String logPass) => Container(
@@ -161,8 +172,6 @@ class RegisterPage extends StatelessWidget {
         validator: (title) =>
             title != null && title.isEmpty ? '$logPass is not empty' : null,
         controller:
-            (logPass == "Login" ? _loginController : _passwordController),
+            (logPass == "Email" ? _loginController : _passwordController),
       )));
 }
-
-//TODO: сообщение пароль больше 6 символов

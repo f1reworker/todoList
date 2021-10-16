@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_list/main.dart';
-import 'package:todo_list/pages/calendar.dart';
-import 'package:todo_list/provider/eventProvider.dart';
+import 'package:todo_list/pages/firstPages/calendar.dart';
+import 'package:todo_list/provider/authProvider.dart';
+import 'package:todo_list/services/database.dart';
 
 import '../event.dart';
 import '../utils.dart';
@@ -28,6 +28,7 @@ class _EventEditingPageState extends State<EventEditingPage> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   late DateTime deadline;
+  String color = "green";
 
   @override
   void initState() {
@@ -84,9 +85,6 @@ class _EventEditingPageState extends State<EventEditingPage> {
             importance = newValue.round();
           });
         },
-        // semanticFormatterCallback: (double newValue) {
-        //   return '${newValue.round()}';
-        // }
       );
 
   List<Widget> buildEditingActions() => [
@@ -95,7 +93,12 @@ class _EventEditingPageState extends State<EventEditingPage> {
               primary: Colors.transparent,
               shadowColor: Colors.transparent,
             ),
-            onPressed: saveForm,
+            onPressed: () {
+              final duration = _selectedHours * 60 + _selectedMin;
+              saveForm(duration);
+              createData(titleController.text, descriptionController.text,
+                  importance, duration, deadline, color);
+            },
             icon: Icon(Icons.done),
             label: Text('Save'))
       ];
@@ -254,6 +257,7 @@ class _EventEditingPageState extends State<EventEditingPage> {
         ],
       );
   void checkColor(String colors) {
+    color = colors;
     colorRed = Icon(
       Icons.check,
       color: Colors.transparent,
@@ -433,26 +437,11 @@ class _EventEditingPageState extends State<EventEditingPage> {
         ],
       );
 
-  Future saveForm() async {
+  Future saveForm(int duration) async {
     final isValid = _formKey.currentState!.validate();
-    final duration = _selectedHours * 60 + _selectedMin;
     if (isValid) {
-      final event = Event(
-        title: titleController.text,
-        description: descriptionController.text,
-        importance: importance,
-        duration: duration,
-        deadline: deadline,
-        backgroundColor: backgroundColor,
-      );
-
-      final provider = Provider.of<EventProvider>(context, listen: false);
-      provider.addEvent(event);
+      AuthProvider().getData();
       Navigator.of(context).pop();
     }
-    print(titleController.text);
-    print(importance);
-    print(duration);
-    print(deadline);
   }
 }

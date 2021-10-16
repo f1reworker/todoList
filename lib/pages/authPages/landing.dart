@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list/models/navigationBar.dart';
-import 'package:todo_list/pages/auth.dart';
+import 'package:todo_list/pages/authPages/auth.dart';
 import 'package:todo_list/provider/authProvider.dart';
 
 bool isLoggedIn = false;

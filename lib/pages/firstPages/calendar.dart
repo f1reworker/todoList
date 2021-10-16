@@ -5,10 +5,9 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:todo_list/main.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:todo_list/provider/eventProvider.dart';
-import 'package:todo_list/widget/tasksWidget.dart';
 
-import '../eventDataSource.dart';
-import 'eventEditingPage.dart';
+import '../../eventDataSource.dart';
+import '../eventEditingPage.dart';
 
 DateTime selectedDate = DateTime.now();
 
@@ -57,24 +56,14 @@ class _CalendarState extends State<Calendar> {
 class CalendarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final events = Provider.of<EventProvider>(context).events;
+    final provider = Provider.of<EventProvider>(context);
 
     return SfCalendar(
       view: CalendarView.month,
-      dataSource: EventDataSource(events),
+      dataSource: EventDataSource(provider.events),
       firstDayOfWeek: 1,
       initialSelectedDate: DateTime.now(),
       onTap: (CalendarTapDetails details) {
-        final provider = Provider.of<EventProvider>(context, listen: false);
-
-        provider.setDate(details.date!);
-
-        showModalBottomSheet(
-          context: context,
-          builder: (context) => TasksWidget(),
-        );
-      },
-      onLongPress: (CalendarLongPressDetails details) {
         selectedDate = (details.date!);
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => EventEditingPage()));

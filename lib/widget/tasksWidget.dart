@@ -14,17 +14,6 @@ class _TasksWidgetState extends State<TasksWidget> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<EventProvider>(context);
-    final selectedEvents = provider.eventsOfSelectedDate;
-
-    if (selectedEvents.isEmpty) {
-      return Center(
-        child: Text(
-          'No Events found!',
-          style: TextStyle(color: Colors.red, fontSize: 24),
-        ),
-      );
-    }
-
     return SfCalendarTheme(
       data: SfCalendarThemeData(
         timeTextStyle: TextStyle(fontSize: 16, color: Colors.black),
@@ -32,8 +21,6 @@ class _TasksWidgetState extends State<TasksWidget> {
       child: SfCalendar(
         view: CalendarView.timelineDay,
         dataSource: EventDataSource(provider.events),
-        initialDisplayDate: provider.selectedDate,
-        initialSelectedDate: provider.selectedDate,
         appointmentBuilder: appointmentBuilder,
         // onTap: (details) {
         //   if (details.appointments == null) return;
